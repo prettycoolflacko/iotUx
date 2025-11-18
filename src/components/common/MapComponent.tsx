@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import MapView, { Marker, UrlTile } from 'react-native-maps';
+import { StyleSheet, View } from 'react-native';
+import { LeafletMap } from './LeafletMap';
 
 interface MapComponentProps {
   latitude: number;
@@ -9,7 +9,7 @@ interface MapComponentProps {
   lastStatus?: string;
 }
 
-// Native map component - uses CartoDB OSM tiles (free, no auth required)
+// Leaflet-based map component - WebView with OSM tiles (no Google SDK!)
 export const MapComponent: React.FC<MapComponentProps> = ({
   latitude,
   longitude,
@@ -17,32 +17,15 @@ export const MapComponent: React.FC<MapComponentProps> = ({
   lastStatus,
 }) => {
   return (
-    <MapView
-      style={styles.map}
-      region={{
-        latitude,
-        longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }}
-      showsUserLocation={false}
-      showsMyLocationButton={false}
-    >
-      <UrlTile
-        urlTemplate="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png"
-        maximumZ={19}
-        flipY={false}
-        subdomains={['a', 'b', 'c', 'd']}
+    <View style={styles.map}>
+      <LeafletMap
+        latitude={latitude}
+        longitude={longitude}
+        deviceId={deviceId}
+        lastStatus={lastStatus}
+        zoom={15}
       />
-      <Marker
-        coordinate={{
-          latitude,
-          longitude,
-        }}
-        title={deviceId}
-        description={lastStatus || 'Device location'}
-      />
-    </MapView>
+    </View>
   );
 };
 
